@@ -33,7 +33,7 @@ class ChapaService {
       const data = {
         amount: amount,
         currency: 'ETB',
-        email: paymentData.email || 'user@example.com',
+        email: paymentData.email || 'user@gmail.com',
         first_name: paymentData.firstName || 'User',
         last_name: paymentData.lastName || 'Customer',
         tx_ref: tx_ref,

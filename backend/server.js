@@ -16,9 +16,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files for WebView closing page
-app.use(express.static(path.join(__dirname, 'public')));
-
 // Routes
 app.get('/', (req, res) => {
   res.json({ 
@@ -26,11 +23,6 @@ app.get('/', (req, res) => {
     status: 'running',
     timestamp: new Date().toISOString()
   });
-});
-
-// Route to serve a simple page that closes the WebView
-app.get('/close-webview', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'close.html'));
 });
 
 // Health check endpoint
@@ -77,6 +69,14 @@ app.post('/api/payment', async (req, res) => {
       error: error.message || 'An error occurred while processing the payment' 
     });
   }
+});
+
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Route to serve the close-webview page
+app.get('/close-webview', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'close.html'));
 });
 
 // Webhook endpoint for Chapa to send payment notifications
@@ -141,8 +141,11 @@ app.get('/api/verify/:tx_ref', async (req, res) => {
 
 // Start server only if this file is run directly (not imported)
 if (require.main === module) {
-  app.listen(PORT, () => {
+  // Bind to all network interfaces to allow connections from other devices
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
+    console.log(`Accessible at http://localhost:${PORT}`);
+    console.log(`Accessible on network at http://192.168.8.157:${PORT}`);
   });
 }
 

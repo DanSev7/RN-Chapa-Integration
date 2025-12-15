@@ -185,6 +185,8 @@ const handlePaymentSubmit = async () => {
 };
 ```
 
+
+
 ## Payment Success Popup and Redirection
 
 ### Success Popup Handling

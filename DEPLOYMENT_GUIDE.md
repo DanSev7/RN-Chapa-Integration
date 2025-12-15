@@ -87,7 +87,9 @@ For proper payment flow integration, you need to ensure your Chapa return URLs a
    - Cancel Return URL: `https://yourdomain.com/close-webview`
 
 ## Step 8: Start the Application
+   
 
+   
 1. In the Node.js app interface, click "Start App"
 2. Wait for the application to start
 3. You should see a green indicator when it's running

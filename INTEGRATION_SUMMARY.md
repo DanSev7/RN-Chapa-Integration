@@ -1,5 +1,6 @@
 # Chapa Payment Integration Technical Summary
 
+
 ## Overview
 
 This document provides a technical overview of how the React Native app integrates with the Chapa payment gateway using a WebView-based approach that keeps users within the app during the payment process.

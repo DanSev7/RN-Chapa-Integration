@@ -76,32 +76,54 @@ After creating the application:
    - Key: `CHAPA_PUBLIC_KEY`, Value: `your_public_key`
 3. Click "Add" for each variable
 
-## Step 7: Start the Application
+## Step 7: Configure Chapa Return URLs
+
+For proper payment flow integration, you need to ensure your Chapa return URLs are correctly configured:
+
+1. Log in to your Chapa merchant dashboard
+2. Navigate to the settings or webhook section
+3. Update the return URLs to point to your deployed domain:
+   - Success Return URL: `https://yourdomain.com/close-webview`
+   - Cancel Return URL: `https://yourdomain.com/close-webview`
+
+## Step 8: Start the Application
 
 1. In the Node.js app interface, click "Start App"
 2. Wait for the application to start
 3. You should see a green indicator when it's running
 
-## Step 8: Test Your Deployment
+## Step 9: Test Your Deployment
 
 Visit your API endpoint to verify it's working:
 - `https://yourdomain.com/` - Should return API information
 - `https://yourdomain.com/health` - Should return health status
 - `https://yourdomain.com/close-webview` - Should show the close page
 
-## Step 9: Update Frontend Configuration
+## Step 10: Update Frontend Configuration
 
 Update your React Native app to use the new API URL:
 
-In `PricingPlanApp/services/paymentService.ts`, change:
-```javascript
-const API_BASE_URL = 'http://192.168.1.7:5000/api';
+In `PricingPlanApp/config/environment.ts`, change:
+```typescript
+const ENV = {
+  development: {
+    apiUrl: 'http://192.168.1.6:5000/api', // Local development server
+  },
+  production: {
+    apiUrl: 'https://yourdomain.com/api', // Production API
+  },
+};
 ```
 
-To your deployed URL:
-```javascript
-const API_BASE_URL = 'https://yourdomain.com/api';
-```
+## Payment Integration Details
+
+Your deployed application implements a secure, WebView-based payment flow:
+
+1. **Frontend**: React Native app sends payment requests to your backend
+2. **Backend**: Node.js server communicates with Chapa's API
+3. **Payment Processing**: Chapa checkout is displayed in a WebView within the app
+4. **Success Handling**: After payment, Chapa redirects to `/close-webview` which serves a special page that communicates back to the app
+5. **Redirection**: The WebView sends a `PAYMENT_SUCCESS` message to the React Native app, which then shows a success popup
 
 ## Troubleshooting
 
@@ -123,6 +145,7 @@ const API_BASE_URL = 'https://yourdomain.com/api';
 4. **Chapa Integration Issues**:
    - Verify API keys are correct
    - Check that return URLs match your domain
+   - Ensure the `/close-webview` route is properly configured
 
 ### Checking Logs:
 

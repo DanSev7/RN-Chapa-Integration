@@ -15,11 +15,17 @@ This guide explains how to build your React Native app for production after depl
 
 Before building, update the API URL in your frontend:
 
-1. Open `PricingPlanApp/services/paymentService.ts`
-2. Change the `API_BASE_URL` to your deployed backend URL:
+1. Open `PricingPlanApp/config/environment.ts`
+2. Update the production `apiUrl` to your deployed backend URL:
    ```typescript
-   // TODO: Update this to your deployed backend URL before building for production
-   const API_BASE_URL = 'https://your-deployed-api-domain.com/api';
+   const ENV = {
+     development: {
+       apiUrl: 'http://192.168.1.6:5000/api', // Local development server
+     },
+     production: {
+       apiUrl: 'https://your-deployed-domain.com/api', // Production API
+     },
+   };
    ```
 
 ## Step 2: Login to Expo
@@ -107,7 +113,7 @@ eas submit --platform ios
 ## Environment-Specific Configurations
 
 ### Development
-- API URL: `http://192.168.1.7:5000/api`
+- API URL: `http://192.168.1.6:5000/api`
 - Debugging enabled
 - Development client
 
@@ -115,6 +121,16 @@ eas submit --platform ios
 - API URL: `https://your-deployed-domain.com/api`
 - Optimized builds
 - Production signing keys
+
+## Payment Integration in Production
+
+Your app implements a secure, WebView-based payment flow:
+
+1. **Frontend**: React Native app sends payment requests to your backend
+2. **Backend**: Node.js server communicates with Chapa's API
+3. **Payment Processing**: Chapa checkout is displayed in a WebView within the app
+4. **Success Handling**: After payment, Chapa redirects to `/close-webview` which serves a special page that communicates back to the app
+5. **Redirection**: The WebView sends a `PAYMENT_SUCCESS` message to the React Native app, which then shows a success popup
 
 ## Troubleshooting
 
@@ -126,7 +142,7 @@ eas submit --platform ios
 
 2. **API connection issues**:
    - Verify your deployed backend is running
-   - Check that the API URL in `paymentService.ts` is correct
+   - Check that the API URL in `environment.ts` is correct
    - Ensure CORS is configured properly on your backend
 
 3. **Asset loading issues**:
@@ -147,7 +163,7 @@ eas build:log <build-id>
 ## Post-Build Steps
 
 1. Download the built APK/AAB (Android) or IPA (iOS)
-2. Test the app thoroughly
+2. Test the app thoroughly, especially the payment flow
 3. Update your app stores with the new version
 4. Monitor crash reports and user feedback
 
@@ -173,7 +189,7 @@ To release updates:
 ## Best Practices
 
 1. **Version Control**: Always commit your changes before building
-2. **Testing**: Test on multiple devices and OS versions
+2. **Testing**: Test on multiple devices and OS versions, especially the complete payment flow
 3. **Backup**: Keep backups of successful builds
 4. **Documentation**: Document changes for each release
 5. **Monitoring**: Set up crash reporting and analytics
